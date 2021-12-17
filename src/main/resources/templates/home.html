@@ -34,7 +34,7 @@
 </style>
 </head>
 <body>
-<table id="table" style="width: 50%;margin-top: 5x;margin-left: 40px;" class="table">
+<table id="table" style="width: 50%;margin-top: 5x;margin-left: 40px;text-align: center" class="table">
     <div id="exportDiv" style="width: 50%;
     margin-left: 15%;
     margin-top: 20px;
@@ -113,8 +113,48 @@
                             $(node).removeClass('dt-button')
                         }},
                     {
-                     extend: 'pdf',
+                     extend: 'pdfHtml5',
                      text: 'Export pdf',
+                     title: 'List of users',
+                     orientation:'landscape',
+                     pageSize:'TABLOID',
+                     footer:'true',
+                        customize: function(doc) {
+                            doc.styles.title.fontSize = 30;
+                            doc.defaultStyle.fontSize = 16;
+                            doc.styles.tableHeader.fontSize = 20;
+                            doc.defaultStyle.alignment = 'center';
+                            doc.pageMargins = [20,20,20,20];
+                            doc.content[1].table.widths =
+                                Array(doc.content[1].table.body[0].length + 1).join('*').split('');
+                            doc.content[0].text = doc.content[0].text.trim();
+                            doc['footer']=(function(page, pages) {
+                                return {
+                                    columns: [
+                                        'v1.0.0 @ Pdf exporter , Created by Arbis Malasi',
+                                        // {
+                                        //     alignment: 'center',
+                                        // }
+                                    ],
+                                    margin: [10, 0]
+                                }
+                            });
+                            var objLayout = {};
+                            // Horizontal line thickness
+                            objLayout['hLineWidth'] = function(i) { return .5; };
+                            // Vertikal line thickness
+                            objLayout['vLineWidth'] = function(i) { return .5; };
+                            // Horizontal line color
+                            objLayout['hLineColor'] = function(i) { return '#aaa'; };
+                            // Vertical line color
+                            objLayout['vLineColor'] = function(i) { return '#aaa'; };
+                            // Left padding of the cell
+                            objLayout['paddingLeft'] = function(i) { return 4; };
+                            // Right padding of the cell
+                            objLayout['paddingRight'] = function(i) { return 4; };
+                            // Inject the object in the document
+                            doc.content[1].layout = objLayout;
+                        },
                      className: 'btn btn-danger',
                             init: function(api, node, config) {
                                 $(node).removeClass('dt-button')
@@ -122,6 +162,7 @@
                     },{
                      extend: 'copy',
                      text: 'Copy content',
+                     title: 'All users',
                      className: 'btn btn-warning',
                             init: function(api, node, config) {
                                 $(node).removeClass('dt-button')
